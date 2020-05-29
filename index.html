@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name='viewport' content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+          margin: 0px;
+          padding: 0px;
+          height: 100vh;
+          background: #212121;
+          color: #FFF;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          font-size: 1.1em;
+        }
+
+        body::-webkit-scrollbar
+        {
+          display: none;
+        }
+
+        .calc_container{
+           width: 100%;
+           /* height: 100vh; */
+           justify-self: center;
+           display: flex;
+           flex-direction: column;
+           flex-wrap: unwrap;
+        }
+
+        .slider_container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .slider_container .bar1, .bar2, .bar3, .bar4, .bar5, .bar6, .bar7, .bar8, .bar9, .bar10, .bar11, .bar12 {
+            position: absolute;
+            z-index: 1;
+            left: 3.5%;
+            right: 3.5%;
+            top: 13px;
+            height: 0.5em;
+            border-radius: 5px;
+            background-color: #5c5c5c;
+            overflow: hidden;
+        }
+
+        .slider_container .bar1 .fill1, .bar2 .fill2, .bar3 .fill3, .bar4 .fill4, .bar5 .fill5, .bar6 .fill6, .bar7 .fill7, .bar8 .fill8, .bar9 .fill9, .bar10 .fill10, .bar11 .fill11, .bar12 .fill12 {
+            display: block;
+            width: 0px;
+            height: 100%;
+            background-color: #4CAF50;
+        }
+
+        .slider_container .slider1 {
+          width: 94%;
+          max-width: 95%;
+          position: relative;
+          z-index: 2;
+          -webkit-appearance: none;
+          margin: 0;
+          margin-bottom: 10px;
+          margin-top: 13px;
+          height: 6px;
+          border-radius: 5px;
+          outline: none;
+          background-color: transparent;
+        }
+
+        .slider_container .slider1::-webkit-slider-thumb {
+           -webkit-appearance: none;
+           width: 20px;
+           height: 20px;
+           background-color: #4CAF50;
+           border-top-right-radius: 50%;
+           border-top-left-radius: 50%;
+           border-bottom-right-radius: 50%;
+           border-bottom-left-radius: 50%;
+           transform: rotate(-45deg) translate(0%, 0%);
+           cursor: pointer;
+           outline: none;
+           transition: .3s ease-in-out;
+           box-shadow: 0 0 0 0px #fff;
+        }
+
+        .slider_container .slider1::-moz-range-thumb {
+            width: 30px;
+            height: 30px;
+            background-color: #4CAF50;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+            border-bottom-left-radius: 50%;
+            transform: rotate(-45deg) translate(0%, 0%);
+            cursor: pointer;
+            outline: none;
+            transition: .3s ease-in-out;
+            box-shadow: 0 0 0 0px #fff;
+        }
+
+        .slider_container .slider1::-moz-range-thumb:hover {
+          border-bottom-left-radius: 0;
+
+          transform: rotate(-45deg) translate(75%, -75%);
+        }
+
+        .slider_container .slider1:active::-moz-range-thumb {
+          box-shadow: 0 0 0 4px #fff;
+        }
+
+        .calc_field_header:nth-child(0)
+        {
+            margin-top: 1%;
+        }
+
+        .calc_field_header {
+            text-align: start;
+            margin: 0;
+            margin-top: 2%;
+            margin-bottom: 30px;
+            margin-left: 3%;
+            font-size: 1.2em;
+        }
+
+        .box-start {
+            position: absolute;
+            top: -30px;
+            left: 3.8%;
+            z-index: 4;
+
+        }
+
+        .percMark10 {
+          position: absolute;
+          top: -30px;
+          left: 12%;
+          z-index: 4;
+        }
+
+        .percMark20 {
+          position: absolute;
+          top: -30px;
+          left: 21.5%;
+          z-index: 4;
+        }
+
+        .percMark30 {
+          position: absolute;
+          top: -30px;
+          left: 30.5%;
+          z-index: 4;
+        }
+
+        .percMark40 {
+          position: absolute;
+          top: -30px;
+          left: 40%;
+          z-index: 4;
+        }
+
+        .percMark50 {
+          position: absolute;
+          top: -30px;
+          left: 49%;
+          z-index: 4;
+        }
+
+        .percMark60 {
+          position: absolute;
+          top: -30px;
+          left: 58%;
+          z-index: 4;
+        }
+
+        .percMark70 {
+          position: absolute;
+          top: -30px;
+          left: 67.5%;
+          z-index: 4;
+        }
+
+        .percMark80 {
+          position: absolute;
+          top: -30px;
+          left: 76.5%;
+          z-index: 4;
+        }
+
+        .percMark90 {
+          position: absolute;
+          top: -30px;
+          left: 86%;
+          z-index: 4;
+        }
+
+        .percMark100 {
+          position: absolute;
+          top: -30px;
+          left: 94%;
+          z-index: 4;
+        }
+
+        .slider2_marc1 {
+          position: absolute;
+          bottom: -15px;
+          left: 3%;
+        }
+
+        .slider2_marc3 {
+          position: absolute;
+          bottom: -15px;
+          left: 13.5%;
+        }
+
+        .slider2_marc5 {
+          position: absolute;
+          bottom: -15px;
+          left: 22.75%;
+        }
+
+        .slider2_marc7 {
+          position: absolute;
+          bottom: -15px;
+          left: 32.5%;
+        }
+
+        .slider2_marc9 {
+          position: absolute;
+          bottom: -15px;
+          left: 42.3%;
+        }
+
+
+        .slider2_marc11 {
+          position: absolute;
+          bottom: -15px;
+          left: 51.2%;
+        }
+
+        .slider2_marc13 {
+          position: absolute;
+          bottom: -15px;
+          left: 61%;
+        }
+
+        .slider2_marc15 {
+          position: absolute;
+          bottom: -15px;
+          left: 70.5%;
+        }
+
+        .slider2_marc17 {
+          position: absolute;
+          bottom: -15px;
+          left: 80%;
+        }
+
+        .slider2_marc19 {
+          position: absolute;
+          bottom: -15px;
+          left: 89.5%;
+        }
+
+        .slider2_marc20 {
+          position: absolute;
+          bottom: -15px;
+          left: 95%;
+        }
+
+        .box-start, .percMark10, .percMark20, .percMark30, .percMark40, .percMark50, .percMark60, .percMark70, .percMark80, .percMark90, .percMark100
+        {
+          font-size: 0.8em;
+        }
+
+        @media(min-width: 768px) {
+          .slider_container .slider1::-webkit-slider-thumb:hover {
+            border-bottom-left-radius: 0;
+
+            transform: rotate(-45deg) translate(75%, -75%);
+          }
+        }
+
+        @media(max-width: 768px) {
+            body {
+              font-size: 1.2em;
+            }
+
+            .box-start, .percMark10, .percMark20, .percMark30, .percMark40, .percMark50, .percMark60, .percMark70, .percMark80, .percMark90, .percMark100
+            {
+              top: -10px;
+            }
+
+            .calc_field_header {
+              font-size: 1em;
+            }
+
+            .percMark90 {
+              left: 85%;
+            }
+
+            .percMark100 {
+                left: 92%;
+            }
+
+        }
+
+        .calc_field_container:last-child {
+          margin-bottom: 20px;
+        }
+
+        .slider_containers_list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .totalCost {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+        }
+
+        .costWrapper {
+          margin-right: 10px;
+        }
+
+        .costWrapper h4 {
+          color: lightgray;
+          margin: 0;
+          margin-bottom: 5px;
+        }
+
+        .costWrapper span {
+          font-size: 22px;
+          margin-bottom: 5px;
+        }
+
+        #purchaseBtn {
+          width: 90%;
+          padding: 13px 0px;
+          font-size: 15px;
+          color: #FFF;
+          align-self: center;
+          background-color: #4CAF50;
+          box-shadow: 0px 0px 0px transparent;
+          border: 1px solid #4CAF50;
+          border-radius: 20px;
+          text-shadow: 0px 0px 0px transparent;
+          transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
+
+        #purchaseBtn:hover {
+          background-color: #FFF;
+          color: #4CAF50;
+        }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div class="calc_container">
+
+      <ul class="slider_containers_list">
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">PERLITE</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar1"><span class="fill1"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">COCO</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar2"><span class="fill2"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">SAND</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar3"><span class="fill3"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">GRIT</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar4"><span class="fill4"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">ORCHARD BARK</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar5"><span class="fill5"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">ACTIVATED CHARCOAL</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar6"><span class="fill6"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">FINE PUMICE</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar7"><span class="fill7"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">COURSE PUMICE</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar8"><span class="fill8"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">WORM CASTINGS</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar9"><span class="fill9"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">VERMICULITE</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar10"><span class="fill10"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header">CLAY BALLS</h2>
+            <div class="slider_container">
+              <div class="box-start">0%</div>
+              <div class="percMark10">10%</div>
+              <div class="percMark20">20%</div>
+              <div class="percMark30">30%</div>
+              <div class="percMark40">40%</div>
+              <div class="percMark50">50%</div>
+              <div class="percMark60">60%</div>
+              <div class="percMark70">70%</div>
+              <div class="percMark80">80%</div>
+              <div class="percMark90">90%</div>
+              <div class="percMark100">1LTR</div>
+
+              <span class="bar11"><span class="fill11"></span></span>
+              <input type='range' class="slider1" min='0' max='100' value="0" step="10">
+            </div>
+          </div>
+        </li>
+        <li class="slider_conainers_element">
+          <div class="calc_field_container">
+            <h2 class="calc_field_header" style="font-size: 24px;">CHOOSE TOTAL AMOUNT</h2>
+            <div class="slider_container">
+              <div class="slider2_marc1">1</div>
+              <div class="slider2_marc3">3</div>
+              <div class="slider2_marc5">5</div>
+              <div class="slider2_marc7">7</div>
+              <div class="slider2_marc9">9</div>
+              <div class="slider2_marc11">11</div>
+              <div class="slider2_marc13">13</div>
+              <div class="slider2_marc15">15</div>
+              <div class="slider2_marc17">17</div>
+              <div class="slider2_marc19">19</div>
+              <div class="slider2_marc20">20</div>
+
+
+
+
+              <span class="bar12"><span class="fill12"></span></span>
+              <input type='range' class="slider1" min='1' max='20' value="1" step="1">
+            </div>
+          </div>
+        </li>
+      </ul>
+
+
+      <div class="totalCost">
+        <div class="costWrapper">
+        <h4>Result:</h4>
+        <span class="cost"><span id="costValue">0</span>&nbsp;GBP</span>
+      </div>
+      </div>
+
+
+      <button id="purchaseBtn" type="button" name="button" onclick="processButton()"><b>Purchase</b></button>
+
+  </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+          let data = [];
+          let fills = [];
+          let costs = [0.78, 0.78, 0.78, 0.78, 1.06, 2.68, 2.14, 2.14, 1.6, 0.78, 1.24]
+          let costSpan = $('#costValue');
+          let titles = $('.calc_field_header');
+          const sliders = $("ul").find('.slider1');
+
+          for(let i = 1; i <= sliders.length; i++)
+          {
+            let fill = $(`.bar${i} .fill${i}`);
+
+            fills.push(fill);
+            $(sliders[i-1]).on('input', setBar);
+            $(sliders[i-1]).attr('id', `range${i}`);
+          }
+
+          function setBar()
+          {
+            let totalCost = 0;
+            let divider = 1;
+
+            for(let i = 0; i < fills.length; i++)
+            {
+              if(i !== 11) {
+                $(fills[i]).css('width', $(sliders[i]).val() + "%");
+              }
+              if(i === 11)
+              {
+                if($(sliders[i]).val() == 1) {
+                  $(fills[i]).css('width', "0%");
+                }
+                else if($(sliders[i]).val() <= 11)
+                {
+                  $(fills[i]).css('width', (($(sliders[i]).val()-0.7)/20*100) + "%");
+                }
+                else if($(sliders[i]).val() < 20)
+                {
+                  $(fills[i]).css('width', (($(sliders[i]).val()-0.3)/20*100) + "%");
+
+                }
+                else{
+                  $(fills[i]).css('width', "100%");
+                }
+              }
+              data[i].value = $(sliders[i]).val();
+
+            }
+
+            for(let i = 0; i < data.length-1; i++)
+            {
+              let costI = costs[i] * parseInt(data[i].value)/10;
+              totalCost += costI;
+            }
+
+            totalCost *= parseInt($('#range12').val());
+            $("#costValue").html(totalCost.toFixed(2));
+          }
+
+          $('li').each( (i) => {
+              let title = titles[i].innerHTML;
+              let value = $("#range"+(i+1)).val();
+              data.push({ title: title, value: value });
+          });
+
+
+          setBar();
+
+          function processButton() {
+
+              window.parent.postMessage(JSON.stringify(data), '*');
+
+
+            console.log(window.postMessage('Message Sent', '*'));
+            console.log("Button pressed");
+          }
+    </script>
+
+
+  </body>
+</html>
